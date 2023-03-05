@@ -1,0 +1,11 @@
+.square{
+    border-radius: 0;
+}
+
+.jumbotron {
+    background-image: linear-gradient(to right, #007bff, #000000);
+    color: white;
+    height: 100px;
+    justify-content: center;
+    align-items: center;
+}
