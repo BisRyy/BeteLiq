@@ -1,13 +1,25 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { SyncOutlined } from "@ant-design/icons";
 import Link from "next/link";
+import { Context } from "../context";
+import { useRouter } from "next/router";
+
 
 const Login = () => {
   const [email, setEmail] = useState("bisry@gmail.com");
   const [password, setPassword] = useState("bisryyyy");
   const [loading, setLoading] = useState(false);
+
+  // state
+  const { state, dispatch } = useContext(Context);
+
+  console.log("LOGIN STATE", state);
+
+  // router
+  const router = useRouter();
+
 
   console.log("process.env.NEXT_PUBLIC_API", process.env.NEXT_PUBLIC_API);
 
@@ -26,6 +38,20 @@ const Login = () => {
         }
       );
       console.log("LOGIN RESPONSE", data);
+
+      dispatch({
+        type: "LOGIN",
+        payload: data,
+      });
+
+      // save in local storage
+      window.localStorage.setItem("user", JSON.stringify(data));
+      toast.success("Login success. Welcome back.");
+
+      // redirect
+      router.push("/");
+      
+
       // setLoading(false);
     } catch (err) {
       console.log(err);

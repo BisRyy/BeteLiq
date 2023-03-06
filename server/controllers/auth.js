@@ -14,7 +14,7 @@ export const register = async (req, res) => {
         .status(400)
         .send("Password is required and should be min 6 characters long");
     }
-    let userExist = await User.findOne({email}).exec();
+    let userExist = await User.findOne({ email }).exec();
     if (userExist) return res.status(400).send("Email is taken");
 
     // hash password
@@ -32,15 +32,14 @@ export const register = async (req, res) => {
     // console.log("SAVED USER", user);
 
     return res.json({ ok: true });
-  }
-  catch (err) {
+  } catch (err) {
     console.log(err);
     res.status(400).send("Error. Try again.");
   }
 };
 
 export const login = async (req, res) => {
-  try{
+  try {
     const { email, password } = req.body;
 
     // check if user with that email exist
@@ -65,8 +64,18 @@ export const login = async (req, res) => {
     });
     // send user as json response
     res.json(user);
-  }catch (err) {
+  } catch (err) {
     console.log(err);
     res.status(400).send("Error. Try again.");
+  }
+};
+
+export const logout = async (req, res) => {
+  try {
+    res.clearCookie("token");
+    res.json({ message: "Signout success" });
+    toast.success("Logout successful. See you Soon.");
+  } catch (err) {
+    console.log(err);
   }
 };
