@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { SyncOutlined } from "@ant-design/icons";
@@ -12,14 +12,19 @@ const Login = () => {
   const [password, setPassword] = useState("bisryyyy");
   const [loading, setLoading] = useState(false);
 
+
   // state
   const { state, dispatch } = useContext(Context);
+  const { user } = state;
 
-  console.log("LOGIN STATE", state);
+  // console.log("LOGIN STATE", state);
 
   // router
   const router = useRouter();
 
+  useEffect(() => {
+    if (user !== null) router.push("/");
+  }, [user]);
 
   console.log("process.env.NEXT_PUBLIC_API", process.env.NEXT_PUBLIC_API);
 

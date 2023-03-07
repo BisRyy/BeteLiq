@@ -1,4 +1,6 @@
 import { useReducer, createContext, useEffect } from "react";
+import axios from "axios";
+import { useRouter } from "next/router";
 
 // initial state
 const initialState = {
@@ -25,6 +27,8 @@ const reducer = (state, action) => {
 const Provider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  const router = useRouter();
+
   useEffect(() => {
     dispatch({
         type: "LOGIN",
@@ -32,11 +36,41 @@ const Provider = ({ children }) => {
         });
     }, []);
 
+    axios.interceptors.response.use(
+        (response) => response,
+        (error) => {
+            let res = error.response;
+            if (res.status === 401 && res.config && !res.config.__isRetryRequest) {
+              axios 
+                .get(`/api/logout`)
+                .then((res) => {
+                  console.log("/401 error > logout ");
+                  dispatch({ type: "LOGOUT" });
+                  window.localStorage.removeItem("user");
+                  router.push("/login");
+                })
+                .catch((err) => {
+                  console.log("AXIOS INTERCEPTOR LOGOUT ERROR", err);
+                  reject(err);
+                });
+            }
+          return Promise.reject(error);
+        }
+      );
+
+      useEffect(() => {
+        const getCsrfToken = async () => {
+          const { data } = await axios.get(`/api/csrf-token`);
+          // console.log("GET CSRF TOKEN RESPONSE", data);
+          axios.defaults.headers["X-CSRF-TOKEN"] = data.csrfToken;
+        };
+        getCsrfToken();
+      }, []);
+      
+
   return (
     <Context.Provider value={{ state, dispatch }}>{children}</Context.Provider>
   );
 };
-
-
 
 export { Context, Provider };

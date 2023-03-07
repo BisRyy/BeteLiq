@@ -6,18 +6,20 @@ import {
   LoginOutlined,
   UserAddOutlined,
   LogoutOutlined,
+  CoffeeOutlined,
 } from "@ant-design/icons";
 import { Context } from "../context";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 
-const { Item } = Menu;
+const { Item, SubMenu } = Menu;
 
 const Topnav = () => {
   const [current, setCurrent] = useState("");
 
   const { state, dispatch } = useContext(Context);
+  const { user } = state;
 
   const router = useRouter();
 
@@ -42,24 +44,38 @@ const Topnav = () => {
       >
         <Link href="/">App</Link>
       </Item>
-      <Item
-        key="/login"
-        onClick={(e) => setCurrent(e.key)}
-        icon={<LoginOutlined />}
-      >
-        <Link href="/login">Login</Link>
-      </Item>
-      <Item
-        key="/register"
-        onClick={(e) => setCurrent(e.key)}
-        icon={<UserAddOutlined />}
-      >
-        <Link href="/register">Register</Link>
-      </Item>
 
-      <Item onClick={logout} icon={<LogoutOutlined />} className="float-right">
-        Logout
-      </Item>
+      {!user && (
+        <>
+          <Item
+            key="/login"
+            onClick={(e) => setCurrent(e.key)}
+            icon={<LoginOutlined />}
+          >
+            <Link href="/login">Login</Link>
+          </Item>
+          <Item
+            key="/register"
+            onClick={(e) => setCurrent(e.key)}
+            icon={<UserAddOutlined />}
+          >
+            <Link href="/register">Register</Link>
+          </Item>
+        </>
+      )}
+
+      {user && (
+        <SubMenu
+          icon={<CoffeeOutlined />}
+          title={user && user.name}
+          style={{ float: "right" }}
+          className="float-right"
+        >
+          <Item onClick={logout} icon={<LogoutOutlined />}>
+            Logout
+          </Item>
+        </SubMenu>
+      )}
     </Menu>
   );
 };
