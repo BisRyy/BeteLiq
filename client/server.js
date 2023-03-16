@@ -1,4 +1,3 @@
-// custom server for next.js
 const express = require("express");
 const next = require("next");
 const { createProxyMiddleware } = require("http-proxy-middleware");
@@ -11,7 +10,7 @@ app
   .prepare()
   .then(() => {
     const server = express();
-
+    // apply proxy in dev mode
     if (dev) {
       server.use(
         "/api",
@@ -32,5 +31,5 @@ app
     });
   })
   .catch((err) => {
-    console.error("Error", err);
+    console.log("Error", err);
   });

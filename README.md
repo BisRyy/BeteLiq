@@ -1,2 +1,1 @@
-# BeteLiq
-Education Platform.
+# Test
